@@ -12,6 +12,7 @@ setup(
     description='Browse, read, and open your favorite rss feed in the terminal (without curses).',
     author='Aziz Alto',
     url='https://github.com/iamaziz/TermFeed',
+    download_url='https://github.com/iamaziz/TermFeed/archive/master.zip'
     author_email='iamaziz.alto@gmail.com',
     version='0.0.5',
     install_requires=['feedparser'],
