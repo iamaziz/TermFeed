@@ -9,11 +9,11 @@ except ImportError:
 setup(
     name='TermFeed',
     summary='Minimal feed reader for terminal.',
-    description='Browse, read, and open your favorite rss feed right in your the terminal (without curses).',
+    description='Browse, read, and open your favorite rss feed in the terminal (without curses).',
     author='Aziz Alto',
     url='https://github.com/iamaziz/TermFeed',
     author_email='iamaziz.alto@gmail.com',
-    version='0.0.1',
+    version='0.0.5',
     install_requires=['feedparser'],
     packages=['termfeed', 'termfeed.support'],
     scripts=[],
