@@ -1,6 +1,7 @@
 TermFeed
 ====
 
+[![PyPI version](https://badge.fury.io/py/termfeed.svg)](http://badge.fury.io/py/termfeed)
 
 **Term**inal **Feed** is a *minimal* feed **reader** for the terminal (without curses).
 
@@ -29,7 +30,7 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 
 `$ feed -p <CATEGORY>`
 
-- preview the RSS sources stored under <CATEGORY> in your library. 
+- preview the RSS sources stored under `<CATEGORY>` in your library.
 
 
 `$ feed -a <RSS-LINK>`
@@ -56,11 +57,11 @@ See `$ feed -h` for detailed usage.
 <!-- see: TermFeed gifs repo: http://imgur.com/a/EBHho
 -->
 
-Default browsing 
+Default browsing
 
 ![default](http://i.imgur.com/CXFFIaF.gif?1)
 
-Browse by topic 
+Browse by topic
 
 ![browse topics](http://i.imgur.com/J09EFVv.gif?1)
 
@@ -82,13 +83,13 @@ Help
 
 download and unpack the [zipped folder](https://github.com/iamaziz/TermFeed/archive/master.zip), then:
 
-2) from the source distribution, 
+2) from the source distribution,
 
 	$ cd TermFeed
 	$ python setup.py install
 
-Or 
-3) Alternatively link the executeable `feed.py` from the downloaded folder to some directory in your `PATH`, e.g.
+Or
+3) Alternatively link the executable `feed.py` from the downloaded folder to some directory in your `PATH`, e.g.
 
 	ln -s ~/Downloads/TermFeed/termfeed/feed.py /usr/local/bin/feed
 
@@ -114,7 +115,7 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 
 - Tested on OS X and Linux.
 - Supports Python 2.7 and Python 3.4
-- The URLs in `urls.py` are complementary. They will be added to your library at `$HOME/.termfeed.db` when you run TermFeed (`$ feed`) for the first time. You may delete them all and have your own list instead. 
+- The URLs in `urls.py` are complementary. They will be added to your library at `$HOME/.termfeed.db` when you run TermFeed (`$ feed`) for the first time. You may delete them all and have your own list instead.
 - To re-initialize your feeds library (database) from `url.py`, delete `.termfeed.db`. TermFeed checks for that data file with every run, if it's not there it will be created from the feeds in `url.py`.
 - [Instant RSS Search](http://ctrlq.org/rss) is a nice search engine for searching RSS feeds.
 
