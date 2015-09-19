@@ -84,6 +84,7 @@ Usage:
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
     feed -t [<category>]
+    feed -R
     feed (-h | --help)
     feed --version
 
@@ -94,6 +95,7 @@ Options:
     -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
     -d URL       Delete <rss-url> from the database file.
     -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
+    -R           Rebuild the library with from the url.py
     -h --help    Show this screen.
 ```
 

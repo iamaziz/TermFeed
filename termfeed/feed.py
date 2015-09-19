@@ -10,6 +10,7 @@ Usage:
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
     feed -t [<category>]
+    feed -R
     feed (-h | --help)
     feed --version
 
@@ -20,6 +21,7 @@ Options:
     -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
     -d URL       Delete <rss-url> from the database file.
     -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
+    -R           Rebuild the library with from the url.py
     -h --help    Show this screen.
 
 """
@@ -218,6 +220,7 @@ def main():
     category = args['<category>']
     delete = args['-d']
     tags = args['-t']
+    rebuild = args['-R']
 
     fetch = True
 
@@ -227,8 +230,8 @@ def main():
     else:
         urls = topic_choice(browse)
 
-    # if not listing feeds 
-    if add_link or delete or category or tags:
+    # if not listing feeds
+    if add_link or delete or category or tags or rebuild:
         fetch = False
 
     # updating URLs library
@@ -238,17 +241,17 @@ def main():
             dbop.add_link(url, category)
         else:
             dbop.add_link(url)
-
+    if delete:
+        dbop.remove_link(delete)
+    # display resource contents
     if tags:
         if category:
             dbop.browse_links(category)
         else:
             dbop.print_topics()
-
-    if delete:
-        dbop.remove_link(delete)
-
-
+    
+    if rebuild:
+        dbop.rebuild_library()
 
     if fetch:
         fetch_feeds(urls)

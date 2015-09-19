@@ -12,10 +12,13 @@ from os import path
 
 homedir = path.expanduser('~')
 
-# instantiate db if it's not created yet
-if not path.exists(homedir + '/.termfeed.db'):
+def rebuild_library():
     import dbinit
     print('created ".termfeed.db" in {}'.format(homedir))
+
+# instantiate db if it's not created yet
+if not path.exists(homedir + '/.termfeed.db'):
+    rebuild_library()
 
 
 # connect to db
