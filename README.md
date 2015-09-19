@@ -11,7 +11,7 @@ To read, preview, open, store, or delete your favorite RSS feeds from the comman
 
 If 1) you are a terminal addict, and 2) you want to stay up to date with the outside world by reading quick feed and summaries WITHOUT having to leave your terminal; then TermFeed is for you. These are the main reasons I created TermFeed.
 
-> Note: it's a pre-alpha release so nothing is so perfect.
+
 
 ### Usage
 
@@ -34,15 +34,23 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 
 `$ feed -t <CATEGORY>`
 
-- list the URLs stored under <category> in your library.
+- list the URLs stored under `<category>` in your library.
 
 `$ feed -a <RSS-LINK>`
 
 - add new link to your rss library.
 
+`$ feed -a <RSS-LINK> <CATEGORY>`
+
+- add new link to your rss library under `<category>`.
+
 `$ feed -d <RSS-LINK>`
 
 - delete a link from your rss library.
+
+`$ feed -R`
+
+- rebuild the library from `urls.py`
 
 
 
@@ -71,6 +79,11 @@ Browse by topic
 Update library (Add or delete links)
 
 ![add delete](http://i.imgur.com/wcHdK4l.gif?1)
+
+
+See the avaiable topics and RSS links in your library:
+
+![list topics](http://i.imgur.com/98DM6US.gif?1)
 
 Help
 
