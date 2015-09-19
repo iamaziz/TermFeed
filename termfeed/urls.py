@@ -17,7 +17,8 @@ rss = {
         "http://feeds.feedburner.com/FeaturedBlogPosts-Bigdatanews",
         "http://cacm.acm.org/browse-by-subject/artificial-intelligence.rss",
         "http://www.deepstuff.org/feed/",
-        "http://feeds.feedburner.com/miriblog"
+        "http://feeds.feedburner.com/miriblog",
+        "http://www.csail.mit.edu/csailnews/rss"
     ],
     "ML": [
         "http://hunch.net/?feed=rss2",
@@ -39,7 +40,8 @@ rss = {
         "https://news.ycombinator.com/rss",
         "http://www.reddit.com/r/learnprogramming/",
         "http://www.reddit.com/r/algorithms/",
-        "http://www.reddit.com/r/programming/"
+        "http://www.reddit.com/r/programming/",
+        "http://feeds.feedburner.com/SingularityBlog"
     ],
     "Stack": [
         "http://stackoverflow.com/questions/tagged/python",
