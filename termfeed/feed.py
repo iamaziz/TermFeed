@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-"""TermFeed 0.0.5
+"""TermFeed 0.0.7
 
 Usage:
     feed
@@ -17,7 +17,7 @@ Options:
                  List feeds from the default category 'General' of your library.
     <URL>        List feeds from the provided url source.
     -b           Browse feed by category avaialble in the database file.
-    -a URL       Add new url <rss-url> to database under [<category] (or 'General' otherwise).
+    -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
     -d URL       Delete <rss-url> from the database file.
     -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
     -h --help    Show this screen.

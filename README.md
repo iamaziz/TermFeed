@@ -74,7 +74,28 @@ Update library (Add or delete links)
 
 Help
 
-![help menu](http://i.imgur.com/Cnbbq2U.gif?1)
+```
+TermFeed 0.0.7
+
+Usage:
+    feed
+    feed <rss-url>
+    feed -b
+    feed -a <rss-url> [<category>]
+    feed -d <rss-url>
+    feed -t [<category>]
+    feed (-h | --help)
+    feed --version
+
+Options:
+                 List feeds from the default category 'General' of your library.
+    <URL>        List feeds from the provided url source.
+    -b           Browse feed by category avaialble in the database file.
+    -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
+    -d URL       Delete <rss-url> from the database file.
+    -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
+    -h --help    Show this screen.
+```
 
 
 ### Installation
