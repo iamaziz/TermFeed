@@ -28,10 +28,13 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 
 - browse latest feeds by category of your library.
 
-`$ feed -p <CATEGORY>`
+`$ feed -t`
 
-- preview the RSS sources stored under `<CATEGORY>` in your library.
+- list the topics stored in your library.
 
+`$ feed -t <CATEGORY>`
+
+- list the URLs stored under <category> in your library.
 
 `$ feed -a <RSS-LINK>`
 
@@ -81,17 +84,12 @@ Help
 	$ pip install TermFeed
 
 
-download and unpack the [zipped folder](https://github.com/iamaziz/TermFeed/archive/master.zip), then:
-
 2) from the source distribution,
+
+download and unpack the [zipped folder](https://github.com/iamaziz/TermFeed/archive/master.zip), then:
 
 	$ cd TermFeed
 	$ python setup.py install
-
-Or
-3) Alternatively link the executable `feed.py` from the downloaded folder to some directory in your `PATH`, e.g.
-
-	ln -s ~/Downloads/TermFeed/termfeed/feed.py /usr/local/bin/feed
 
 ### Uninstall
 
@@ -123,3 +121,8 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 ### Author
 
 - Aziz Alto
+
+### changelog:
+
+- Merge listing `urls` and `topics` under same argument.
+- Add option to re-build library from command line.

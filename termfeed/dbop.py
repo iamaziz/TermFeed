@@ -36,16 +36,22 @@ def read(topic):
 def browse_links(topic):
     if topic in d.keys():
         links = d[topic]
-        print('"{}" contents:'.format(topic))
+        print('{} resources:'.format(topic))
         for link in links:
             print('\t{}'.format(link))
     else:
         print('no category named {}'.format(topic))
-        print('Available topics: {}'.format(topics()))
+        print_topics()
+
+
+def print_topics():
+    print('available topics: ')
+    for t in topics():
+        print('\t{}'.format(t))
 
 
 def add_link(link, topic='General'):
-    
+
     if topic in d.keys():
         if link not in d[topic]:
             # to add a new url: copy, mutates, store back
@@ -81,7 +87,7 @@ def delete_topic(topic):
 
 
 # if __name__ == '__main__':
-    
+
 #     for l in read('News'):
 #         print(l)
 

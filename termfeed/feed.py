@@ -7,21 +7,19 @@ Usage:
     feed
     feed <rss-url>
     feed -b
-    feed -p <category>
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
-    feed -t
+    feed -t [<category>]
     feed (-h | --help)
     feed --version
 
 Options:
-                 List feeds from the default category 'General'.
+                 List feeds from the default category 'General' of your library.
     <URL>        List feeds from the provided url source.
     -b           Browse feed by category avaialble in the database file.
-    -p TOPIC     Preview the stored urls of the topic <category>.
     -a URL       Add new url <rss-url> to database under [<category] (or 'General' otherwise).
     -d URL       Delete <rss-url> from the database file.
-    -t           See the stored category tags (topics) stored in your library.
+    -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
     -h --help    Show this screen.
 
 """
@@ -211,7 +209,7 @@ from .support.docopt import docopt
 
 def main():
     args = docopt(
-        __doc__, version="TermFeed 0.0.5 (with pleasure by: Aziz Alto)")
+        __doc__, version="TermFeed 0.0.7 (with pleasure by: Aziz Alto)")
 
     # parse args
     browse = args['-b']
@@ -219,7 +217,6 @@ def main():
     add_link = args['-a']
     category = args['<category>']
     delete = args['-d']
-    view = args['-p']
     tags = args['-t']
 
     fetch = True
@@ -231,10 +228,10 @@ def main():
         urls = topic_choice(browse)
 
     # if not listing feeds 
-    if add_link or delete or view or category or tags:
+    if add_link or delete or category or tags:
         fetch = False
 
-    # updating URLs db
+    # updating URLs library
     if add_link:
         url = validate_feed(add_link)
         if category:
@@ -243,14 +240,15 @@ def main():
             dbop.add_link(url)
 
     if tags:
-        for t in dbop.topics():
-            print(t)
+        if category:
+            dbop.browse_links(category)
+        else:
+            dbop.print_topics()
 
     if delete:
         dbop.remove_link(delete)
 
-    if view:
-        dbop.browse_links(view)
+
 
     if fetch:
         fetch_feeds(urls)
