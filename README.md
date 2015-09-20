@@ -160,5 +160,7 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 
 ### changelog:
 
+**v. 0.0.7**
+
 - Merge listing `urls` and `topics` under same argument.
 - Add option to re-build library from command line.
