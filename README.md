@@ -53,14 +53,12 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 - rebuild the library from `urls.py`
 
 
-
-See `$ feed -h` for detailed usage.
-
 ### Features (what you can do?)
 
-- Colorful text.
+- List feeds from different sources (stored in your library) with colorful text.
 - Preview a short summary of a selected feed.
-- Jump to (open) the source page of a feed in default browser.
+- Jump to (optionally) the source page of a feed in default browser.
+- Store new (or delete) RSS URLs in (from) your library under a specific topic or under the default tag `General`.
 
 
 ### Examples
@@ -86,6 +84,7 @@ See the avaiable topics and RSS links in your library:
 ![list topics](http://i.imgur.com/98DM6US.gif?1)
 
 Help
+See `$ feed -h` for detailed usage.
 
 ```
 TermFeed 0.0.7
