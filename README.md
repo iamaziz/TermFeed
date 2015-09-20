@@ -150,7 +150,6 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 - Tested on OS X and Linux.
 - Supports Python 2.7 and Python 3.4
 - The URLs in `urls.py` are complementary. They will be added to your library at `$HOME/.termfeed.db` when you run TermFeed (`$ feed`) for the first time. You may delete them all and have your own list instead.
-- To re-initialize your feeds library (database) from `url.py`, delete `.termfeed.db`. TermFeed checks for that data file with every run, if it's not there it will be created from the feeds in `url.py`.
 - [Instant RSS Search](http://ctrlq.org/rss) is a nice search engine for searching RSS feeds.
 
 
