@@ -48,6 +48,9 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 
 - delete a link from your rss library.
 
+`$ feed -D <category>`
+- Remove entire category (with its URLs) from library.
+
 `$ feed -R`
 
 - rebuild the library from `urls.py`
