@@ -87,7 +87,7 @@ Help
 See `$ feed -h` for detailed usage.
 
 ```
-TermFeed 0.0.7
+TermFeed 0.0.8
 
 Usage:
     feed
@@ -96,19 +96,21 @@ Usage:
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
     feed -t [<category>]
+    feed -D <category>
     feed -R
     feed (-h | --help)
     feed --version
 
 Options:
-                 List feeds from the default category 'General' of your library.
-    <URL>        List feeds from the provided url source.
-    -b           Browse feed by category avaialble in the database file.
-    -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
-    -d URL       Delete <rss-url> from the database file.
-    -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
-    -R           Rebuild the library from the url.py
-    -h --help    Show this screen.
+                  List feeds from the default category 'General' of your library.
+    <URL>         List feeds from the provided url source.
+    -b            Browse feed by category avaialble in the database file.
+    -a URL        Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
+    -d URL        Delete <rss-url> from the database file.
+    -t            See the stored categories in your library, or list the URLs stored under <category> in your library.
+    -D TOPIC      Remove entire cateogry (and its urls) from your library.
+    -R            Rebuild the library from the url.py
+    -h --help     Show this screen.
 ```
 
 
@@ -157,6 +159,11 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 - Aziz Alto
 
 ### changelog:
+
+**v. 0.0.8**
+
+- Add new option to remove entire category from your library.
+- Fix [#1](https://github.com/iamaziz/TermFeed/pull/1).
 
 **v. 0.0.7**
 
