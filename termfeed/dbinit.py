@@ -3,9 +3,9 @@
 # This should be exectued once to initialize the db from urls.py
 
 import shelve
-from urls import rss
 from os import path
 
+from termfeed.urls import rss
 
 homedir = path.expanduser('~')
 

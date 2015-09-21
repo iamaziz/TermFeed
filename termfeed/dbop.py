@@ -13,7 +13,7 @@ from os import path
 homedir = path.expanduser('~')
 
 def rebuild_library():
-    import dbinit
+    import termfeed.dbinit
     print('created ".termfeed.db" in {}'.format(homedir))
 
 # instantiate db if it's not created yet

@@ -37,7 +37,7 @@ try:
 except ImportError:
     from urllib.request import urlopen
 
-import dbop
+import termfeed.dbop as dbop
 
 
 class bcolors:
