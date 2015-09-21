@@ -83,10 +83,15 @@ def remove_link(link):
 
 
 def delete_topic(topic):
+    if topic == 'General':
+        print('Default topic "General" cannot be removed.')
+        exit()
     try:
         del d[topic]
+        print('Removed "{}" from your library.'.format(topic))
     except KeyError:
-        pass
+        print('"{}" is not in your library!'.format(topic))
+        exit()
 
 
 # if __name__ == '__main__':

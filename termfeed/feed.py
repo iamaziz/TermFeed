@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-"""TermFeed 0.0.7
+"""TermFeed 0.0.8
 
 Usage:
     feed
@@ -10,19 +10,21 @@ Usage:
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
     feed -t [<category>]
+    feed -D <category>
     feed -R
     feed (-h | --help)
     feed --version
 
 Options:
-                 List feeds from the default category 'General' of your library.
-    <URL>        List feeds from the provided url source.
-    -b           Browse feed by category avaialble in the database file.
-    -a URL       Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
-    -d URL       Delete <rss-url> from the database file.
-    -t           See the stored categories in your library, or list the URLs stored under <category> in your library.
-    -R           Rebuild the library from the url.py
-    -h --help    Show this screen.
+                  List feeds from the default category 'General' of your library.
+    <URL>         List feeds from the provided url source.
+    -b            Browse feed by category avaialble in the database file.
+    -a URL        Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
+    -d URL        Delete <rss-url> from the database file.
+    -t            See the stored categories in your library, or list the URLs stored under <category> in your library.
+    -D TOPIC      Remove entire cateogry (and its urls) from your library.
+    -R            Rebuild the library from the url.py
+    -h --help     Show this screen.
 
 """
 
@@ -211,7 +213,7 @@ from .support.docopt import docopt
 
 def main():
     args = docopt(
-        __doc__, version="TermFeed 0.0.7 (with pleasure by: Aziz Alto)")
+        __doc__, version="TermFeed 0.0.8 (with pleasure by: Aziz Alto)")
 
     # parse args
     browse = args['-b']
@@ -219,6 +221,7 @@ def main():
     add_link = args['-a']
     category = args['<category>']
     delete = args['-d']
+    remove = args['-D']
     tags = args['-t']
     rebuild = args['-R']
 
@@ -231,7 +234,7 @@ def main():
         urls = topic_choice(browse)
 
     # if not listing feeds
-    if add_link or delete or category or tags or rebuild:
+    if add_link or delete or category or tags or rebuild or remove:
         fetch = False
 
     # updating URLs library
@@ -243,6 +246,9 @@ def main():
             dbop.add_link(url)
     if delete:
         dbop.remove_link(delete)
+
+    if remove:
+        dbop.delete_topic(remove)
     # display resource contents
     if tags:
         if category:
