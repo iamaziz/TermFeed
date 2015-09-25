@@ -163,6 +163,9 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 
 ### changelog:
 
+**v. 0.0.9**
+- Bug: Fix crash when feed's description is not avaiable.
+
 **v. 0.0.8**
 
 - Add new option to remove entire category from your library.
