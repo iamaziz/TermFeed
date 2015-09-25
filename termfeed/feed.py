@@ -84,6 +84,9 @@ def print_desc(topic, txt):
     except UnicodeEncodeError:
         pass
     print(bcolors.BOLD + '\n\t{}'.format(txt.encode('utf8')) + bcolors.ENDC)
+
+
+def open_it():
     try:
         txt = '\n\n\t Open it in browser ? [y/n] '
         try:
@@ -157,11 +160,13 @@ def fetch_feeds(urls):
                     # to open page in browser
                     link = zipped[int(kb)].link
                     title = zipped[int(kb)].title
-                    desc = zipped[int(kb)].description
+                    try:
+                        desc = zipped[int(kb)].description
+                        print_desc(title, desc)
+                    except AttributeError:
+                        print('\n\tNo description available!!')
 
-                    openit = print_desc(title, desc)
-
-                    if openit:
+                    if open_it():
                         open_page(link, title)
                 else:
                     print(
@@ -255,7 +260,7 @@ def main():
             dbop.browse_links(category)
         else:
             dbop.print_topics()
-    
+
     if rebuild:
         dbop.rebuild_library()
 
