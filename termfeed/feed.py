@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-"""TermFeed 0.0.9
+"""TermFeed 0.0.10
 
 Usage:
     feed
@@ -228,7 +228,7 @@ from .support.docopt import docopt
 
 def main():
     args = docopt(
-        __doc__, version="TermFeed 0.0.9 (with pleasure by: Aziz Alto)")
+        __doc__, version="TermFeed 0.0.10 (with pleasure by: Aziz Alto)")
 
     # parse args
     browse = args['-b']

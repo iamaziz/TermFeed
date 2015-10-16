@@ -14,7 +14,7 @@ setup(
     download_url='https://github.com/iamaziz/TermFeed/archive/master.zip',
     license = "MIT",
     author_email='iamaziz.alto@gmail.com',
-    version='0.0.9',
+    version='0.0.10',
     install_requires=['feedparser'],
     packages=['termfeed', 'termfeed.support'],
     scripts=[],
