@@ -127,7 +127,7 @@ def parse_feed(url):
     if d.entries:
         return d
     else:
-        print("Invalid URL feed: {}".format(url))
+        print("INVALID URL feed: {}".format(url))
         return None
 
 
@@ -135,15 +135,15 @@ def fetch_feeds(urls):
 
     for i, url in enumerate(urls):
 
-        # feeds source
-        l = len(urls) - 1
-        print(
-            bcolors.HEADER + "\n     {}/{} SOURCE>> {}\n".format(i, l, url) + bcolors.ENDC)
-
         d = parse_feed(url)
 
         if d is None:
             continue  # to next url
+
+        # feeds source
+        l = len(urls) - 1
+        print(
+            bcolors.HEADER + "\n     {}/{} SOURCE>> {}\n".format(i, l, url) + bcolors.ENDC)
 
         # print out feeds
         zipped = dict(enumerate(d.entries))
@@ -162,6 +162,7 @@ def fetch_feeds(urls):
                     title = zipped[int(kb)].title
                     try:
                         desc = zipped[int(kb)].description
+                        desc = clean_txt(desc)
                         print_desc(title, desc)
                     except AttributeError:
                         print('\n\tNo description available!!')
