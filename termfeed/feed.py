@@ -33,6 +33,7 @@ from __future__ import print_function
 import sys
 import webbrowser
 import feedparser
+import re
 
 try:
     from urllib import urlopen
@@ -101,6 +102,11 @@ def open_it():
         print('\n')
         return False
 
+def clean_txt(txt):
+    """clean txt from html tags"""
+    cleaned = re.sub(r'<.*?>', '', txt)
+    cleaned = cleaned.replace('&lt;', '<').replace('&gt;', '>') # retain html code tags
+    return cleaned
 
 def _continue():
     try:
