@@ -197,14 +197,14 @@ def topic_choice(browse):
 
         try:
             m = '\nChoose the topic (number)? : '
-            try:
-                uin = raw_input(m)
-            except NameError:
+            try: # python 2
+                uin = raw_input(m) 
+            except NameError: # python 3
                 uin = input(m)
             uin = int(uin)
             topic = tags[uin]
-        except ValueError:
-            print('invalid choice!')
+        except: # catch all exceptions
+            print('\nInvalid choice!')
             topic = 'General'
 
     else:
