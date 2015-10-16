@@ -2,7 +2,7 @@
 
 ### Changelog:
 
-**0.0.10**
+**0.0.11**
 
 - Fix: clean description text from html tags.
 - Fix: `KeyboardInterrupt` when terminated without choosing topic (e.g. `CTRL-C`).
