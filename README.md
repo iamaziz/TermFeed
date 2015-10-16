@@ -161,17 +161,3 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 
 - Aziz Alto
 
-### changelog:
-
-**v. 0.0.9**
-- Bug: Fix crash when feed's description is not avaiable.
-
-**v. 0.0.8**
-
-- Add new option to remove entire category from your library.
-- Fix [#1](https://github.com/iamaziz/TermFeed/pull/1).
-
-**v. 0.0.7**
-
-- Merge listing `urls` and `topics` under same argument.
-- Add option to re-build library from command line.
