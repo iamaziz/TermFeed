@@ -103,9 +103,12 @@ def open_it():
         return False
 
 def clean_txt(txt):
-    """clean txt from html tags"""
-    cleaned = re.sub(r'<.*?>', '', txt)
+    """clean txt from e.g. html tags"""
+    cleaned = re.sub(r'<.*?>', '', txt) # remove html
     cleaned = cleaned.replace('&lt;', '<').replace('&gt;', '>') # retain html code tags
+    cleaned = cleaned.replace('&quot;', '"')
+    cleaned = cleaned.replace('&rsquo;', "'")
+    cleaned = cleaned.replace('&nbsp;', ' ') # italized text
     return cleaned
 
 def _continue():
