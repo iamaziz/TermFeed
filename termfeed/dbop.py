@@ -9,20 +9,19 @@ dbop.py manipulate database add, update, delete
 
 import shelve
 from os import path
+from termfeed.urls import rss
 
 homedir = path.expanduser('~')
 
-def rebuild_library():
-    import termfeed.dbinit
-    print('created ".termfeed.db" in {}'.format(homedir))
-
-# instantiate db if it's not created yet
-if not path.exists(homedir + '/.termfeed.db'):
-    rebuild_library()
-
-
 # connect to db
 d = shelve.open(path.join(homedir, '.termfeed'), 'w')
+
+def rebuild_library():
+    # dump urls.py into rss_shelf.db
+    d.clear()
+    for topic in rss:
+        links = rss[topic]
+        d[topic] = [link for link in links]
 
 
 def topics():
