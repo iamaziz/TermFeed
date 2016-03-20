@@ -33,8 +33,8 @@ class DataBase:
             self.rss = json.load(f)
 
     def save_rss_on_fs(self, rss):
-        with open(self.file+'.json', 'w') as f:
-            json.load(rss, f)
+        with open(self.file, 'w') as f:
+            json.dump(rss, f)
 
     @property
     def topics(self):
@@ -71,14 +71,14 @@ class DataBase:
                 temp = self.rss[topic]
                 temp.append(link)
                 self.rss[topic] = temp
-                self.save_rss_on_fs(rss)
+                self.save_rss_on_fs(self.rss)
                 print('Updated .. {}'.format(topic))
             else:
                 print('{} already exists in {}!!'.format(link, topic))
         else:
             print('Created new category .. {}'.format(topic))
             self.rss[topic] = [link]
-            self.save_rss_on_fs(rss)
+            self.save_rss_on_fs(self.rss)
 
 
     def remove_link(self, link):
@@ -86,7 +86,7 @@ class DataBase:
         for topic in self.topics:
             if link in self.rss[topic]:
                 self.rss[topic] = [l for l in self.rss[topic] if l != link]
-                self.save_rss_on_fs(rss)
+                self.save_rss_on_fs(self.rss)
                 print('removed: {}\nfrom: {}'.format(link, topic))
                 done = True
 
@@ -100,7 +100,7 @@ class DataBase:
             exit()
         try:
             del self.rss[topic]
-            self.save_rss_on_fs(rss)
+            self.save_rss_on_fs(self.rss)
             print('Removed "{}" from your library.'.format(topic))
         except KeyError:
             print('"{}" is not in your library!'.format(topic))
