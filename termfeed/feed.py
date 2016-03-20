@@ -6,7 +6,7 @@
 Usage:
     feed
     feed <rss-url>
-    feed -b
+    feed -b [<category>]
     feed -a <rss-url> [<category>]
     feed -d <rss-url>
     feed -t [<category>]
@@ -70,21 +70,31 @@ def print_feed(zipped):
     #'authors', 'published_parsed', 'title', 'title_detail'])
 
     def parse_time(post):
-        return c.info | arrow.get(dateutil.parser.parse(post.published)).humanize()
+        try:
+            return c.info | arrow.get(dateutil.parser.parse(post.published)).humanize()
+        except:
+            return c.info | arrow.get(dateutil.parser.parse(post.updated)).humanize()
 
-    r = re.compile(r'(\w+)\.git')
+    def parse_author(post):
+        if post.author_detail.name:
+            return post.author_detail.name
+        else:
+            return post.author_detail.email.split('@')[0]
+
+    r = re.compile(r'(\w+)(?:/commits/\w+\.atom|\.git)')
 
     def repo(post):
-        repos = r.findall(post.summary_detail.base)
+        # print(post.keys())
+        repos = r.findall(post.content[0].base)#summary_detail.base)
         if repos:
             return repos[0]
         else:
             return ''
 
-    table = [[  c.green | '[{}] '.format(num),
+    table = [[  c.green | '[{}]'.format(num),
                 repo(post),
                 parse_time(post),
-                c.dark_gray | post.author_detail.name, post.title]
+                c.dark_gray | parse_author(post), post.title]
             for num, post in reversed(list(zipped.items()))]
 
     print(tabulate(table, tablefmt="plain"))#, tablefmt="plain"))
@@ -178,7 +188,11 @@ def fetch_feeds(urls):
         zipped += d.entries
 
     # https://wiki.python.org/moin/HowTo/Sorting#The_Old_Way_Using_Decorate-Sort-Undecorate
-    decorated = [(dateutil.parser.parse(post.published), i, post) for i, post in enumerate(zipped)]
+    try:
+        decorated = [(dateutil.parser.parse(post.published), i, post) for i, post in enumerate(zipped)]
+    except:
+        decorated = [(dateutil.parser.parse(post.updated), i, post) for i, post in enumerate(zipped)]
+
     decorated.sort(reverse=True)
     zipped = [post for time, i, post in decorated]               # undecorate
 
@@ -214,30 +228,31 @@ def fetch_feeds(urls):
     recurse(zipped)
 
 
-def topic_choice(browse):
+def topic_choice(browse, topic):
 
-    if browse:
+    if not topic in dbop.topics:
+        if browse:
 
-        tags = {}
+            tags = {}
 
-        for i, tag in enumerate(dbop.topics):
-            tags[i] = tag
-            print("{}) {}".format(i, tags[i]))
+            for i, tag in enumerate(dbop.topics):
+                tags[i] = tag
+                print("{}) {}".format(i, tags[i]))
 
-        try:
-            m = '\nChoose the topic (number)? : '
-            try: # python 2
-                uin = raw_input(m)
-            except NameError: # python 3
-                uin = input(m)
-            uin = int(uin)
-            topic = tags[uin]
-        except: # catch all exceptions
-            print('\nInvalid choice!')
+            try:
+                m = '\nChoose the topic (number)? : '
+                try: # python 2
+                    uin = raw_input(m)
+                except NameError: # python 3
+                    uin = input(m)
+                uin = int(uin)
+                topic = tags[uin]
+            except: # catch all exceptions
+                print('\nInvalid choice!')
+                topic = 'General'
+
+        else:
             topic = 'General'
-
-    else:
-        topic = 'General'
     urls = dbop.read(topic)
 
     return urls
@@ -272,10 +287,10 @@ def main():
     if external:
         urls = [validate_feed(external)]
     else:
-        urls = topic_choice(browse)
+        urls = topic_choice(browse, category)
 
     # if not listing feeds
-    if add_link or delete or category or tags or rebuild or remove:
+    if add_link or delete or tags or rebuild or remove:
         fetch = False
 
     # updating URLs library
