@@ -7,93 +7,86 @@ database operations.
 dbop.py manipulate database add, update, delete
 """
 
-import shelve, yaml
+import yaml, json
 from os import path
+from cached_property import cached_property
 
 class DataBase:
 
-    def rebuild_library(self):
-        # import termfeed.dbinit
-        if not path.exists('rss.yaml'):
-            from termfeed.urls import rss
-            with open('rss.yaml', 'w') as f:
-                f.write(yaml.dump(rss, default_flow_style=False))
+    file = path.join(path.expanduser('~'), '.termfeed.json')
 
-        with open('rss.yaml', 'r') as f:
+    def rebuild_library(self):
+
+        with open(path.join(path.dirname(__file__), 'rss.yaml'), 'r') as f:
             rss = yaml.load(f)
 
-        with shelve.open(self.file) as d:
-            for topic in rss:
-                links = rss[topic]
-                d[topic] = [link for link in links]
-
-            print('created ".termfeed" in {}'.format(path.dirname(self.file)))
+        self.save_rss_on_fs(rss)
+        print('created ".termfeed" in {}'.format(path.dirname(self.file)))
 
     def __init__(self):
-        homedir = path.expanduser('~')
-
-        self.file = path.join(homedir, '.termfeed')
 
         # instantiate db if it's not created yet
-        if not (path.exists(self.file + '.dir')
-                or path.exists(self.file + '.dat')):
+        if not (path.exists(self.file)):
             self.rebuild_library()
 
-        # connect to db
-        self.db = shelve.open(self.file, 'w')
+        with open(self.file, 'r') as f:
+            self.rss = json.load(f)
 
-
-    def __del__(self):
-        self.db.close()
+    def save_rss_on_fs(self, rss):
+        with open(self.file+'.json', 'w') as f:
+            json.load(rss, f)
 
     @property
     def topics(self):
-        return list(self.db.keys())
-
+        return self.rss.keys()
+        # return list(self.db.keys())
 
     def read(self, topic):
         if topic in self.topics:
-            return self.db[topic]
+            return self.rss[topic]
         else:
             return None
 
     def browse_links(self, topic):
         if topic in self.topics:
-            links = self.db[topic]
+            links = self.rss[topic]
             print('{} resources:'.format(topic))
             for link in links:
                 print('\t{}'.format(link))
         else:
             print('no category named {}'.format(topic))
-            print_topics(d)
+            print(self)
 
-    def __repr__(self):
+    def __str__(self):
         out = 'available topics: \n\t' + '\n\t'.join(self.topics)
         return(out)
 
-    def print_topics(self, d = None):
+    def print_topics(self):
         print(self)
 
     def add_link(self, link, topic='General'):
         if topic in self.topics:
-            if link not in d[topic]:
+            if link not in self.rss[topic]:
                 # to add a new url: copy, mutates, store back
-                temp = d[topic]
+                temp = self.rss[topic]
                 temp.append(link)
-                self.db[topic] = temp
+                self.rss[topic] = temp
+                self.save_rss_on_fs(rss)
                 print('Updated .. {}'.format(topic))
             else:
                 print('{} already exists in {}!!'.format(link, topic))
         else:
             print('Created new category .. {}'.format(topic))
-            self.db[topic] = [link]
+            self.rss[topic] = [link]
+            self.save_rss_on_fs(rss)
 
 
     def remove_link(self, link):
         done = False
         for topic in self.topics:
-            if link in self.db[topic]:
-                self.db[topic] = [l for l in self.db[topic] if l != link]
+            if link in self.rss[topic]:
+                self.rss[topic] = [l for l in self.rss[topic] if l != link]
+                self.save_rss_on_fs(rss)
                 print('removed: {}\nfrom: {}'.format(link, topic))
                 done = True
 
@@ -106,7 +99,8 @@ class DataBase:
             print('Default topic "General" cannot be removed.')
             exit()
         try:
-            del self.db[topic]
+            del self.rss[topic]
+            self.save_rss_on_fs(rss)
             print('Removed "{}" from your library.'.format(topic))
         except KeyError:
             print('"{}" is not in your library!'.format(topic))
