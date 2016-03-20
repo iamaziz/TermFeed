@@ -24,9 +24,9 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 - browse latest feed from the single link `<RSS-LINK>` provided.
 - e.g. `$ feed https://news.ycombinator.com/rss`
 
-`$ feed -b`
+`$ feed -b [<category>]`
 
-- browse latest feeds by category of your library.
+- browse latest feeds by <category> of your library. If <category> is missing select input appear.
 
 `$ feed -t`
 
@@ -51,9 +51,9 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 `$ feed -D <category>`
 - Remove entire category (with its URLs) from library.
 
-`$ feed -R`
+`$ feed -R [<file>]`
 
-- rebuild the library from `urls.py`
+- rebuild the library. Default `rss.yaml`
 
 
 ### Features (what you can do?)
