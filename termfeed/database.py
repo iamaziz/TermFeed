@@ -15,13 +15,21 @@ class DataBase:
 
     file = path.join(path.expanduser('~'), '.termfeed.json')
 
-    def rebuild_library(self):
+    def rebuild_library(self, file):
+        if not path:
+            file = path.join(path.dirname(__file__), 'rss.yaml')
+        elif not path.exists(file):
+            raise FileNotFoundError(file)
 
-        with open(path.join(path.dirname(__file__), 'rss.yaml'), 'r') as f:
+        with open(file, 'r') as f:
             rss = yaml.load(f)
 
         self.save_rss_on_fs(rss)
         print('created ".termfeed" in {}'.format(path.dirname(self.file)))
+
+    @property
+    def as_yaml(self):
+        return yaml.dump(self.rss, default_flow_style=False)
 
     def __init__(self):
 

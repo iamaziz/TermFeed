@@ -11,7 +11,8 @@ Usage:
     feed -d <rss-url>
     feed -t [<category>]
     feed -D <category>
-    feed -R
+    feed -R [<file>]
+    feed --print-library
     feed (-h | --help)
     feed --version
 
@@ -94,8 +95,9 @@ def print_feed(zipped):
     table = [[  c.green | '[{}]'.format(num),
                 repo(post),
                 parse_time(post),
-                c.dark_gray | parse_author(post), post.title]
-            for num, post in reversed(list(zipped.items()))]
+                c.dark_gray | parse_author(post),
+                post.title,
+            ] for num, post in reversed(list(zipped.items()))]
 
     print(tabulate(table, tablefmt="plain"))#, tablefmt="plain"))
 
@@ -280,6 +282,9 @@ def main():
     remove = args['-D']
     tags = args['-t']
     rebuild = args['-R']
+    file = args['<file>']
+    print_library = args['--print-library']
+
 
     fetch = True
 
@@ -290,7 +295,7 @@ def main():
         urls = topic_choice(browse, category)
 
     # if not listing feeds
-    if add_link or delete or tags or rebuild or remove:
+    if add_link or delete or tags or rebuild or remove or print_library:
         fetch = False
 
     # updating URLs library
@@ -313,10 +318,13 @@ def main():
             print(dbop)
 
     if rebuild:
-        dbop.rebuild_library()
+        dbop.rebuild_library(file)
 
     if fetch:
         fetch_feeds(urls)
+
+    if print_library:
+        print(dbop.as_yaml)
 
 # start
 if __name__ == '__main__':
