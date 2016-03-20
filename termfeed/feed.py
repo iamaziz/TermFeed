@@ -23,7 +23,7 @@ Options:
     -d URL        Delete <rss-url> from the database file.
     -t            See the stored categories in your library, or list the URLs stored under <category> in your library.
     -D TOPIC      Remove entire cateogry (and its urls) from your library.
-    -R            Rebuild the library from the url.py
+    -R            Rebuild the library from the rss.yaml
     -h --help     Show this screen.
 
 """
@@ -34,6 +34,9 @@ import sys
 import webbrowser
 import feedparser
 import re
+import arrow
+import dateutil.parser
+from plumbum import colors as c
 
 try:
     from urllib import urlopen
@@ -43,19 +46,6 @@ except ImportError:
 import termfeed.database
 
 dbop = termfeed.database.DataBase()
-
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
 def _connected():
     """check internet connect"""
     host = 'http://google.com'
@@ -66,27 +56,48 @@ def _connected():
     except:
         return False
 
-
 def open_page(url, title):
-    print(bcolors.WARNING +
-          '\topening ... {}\n'.format(title.encode('utf8')) + bcolors.ENDC)
+    with c.info:
+        print('\topening ... {}\n'.format(title.encode('utf8')))
     # open page in browser
     webbrowser.open(url)
 
-
+from tabulate import tabulate
 def print_feed(zipped):
+    #keys()
+    #dict_keys(['id', 'links', 'summary', 'author', 'guidislink',
+    #'author_detail', 'link', 'summary_detail', 'published', 'content',
+    #'authors', 'published_parsed', 'title', 'title_detail'])
 
-    for num, post in zipped.items():
-        print(bcolors.OKGREEN + '[{}] '.format(num) + bcolors.ENDC, end='')
-        print('{}'.format(post.title.encode('utf8')))
+    def parse_time(post):
+        return c.info | arrow.get(dateutil.parser.parse(post.published)).humanize()
+
+    r = re.compile(r'(\w+)\.git')
+
+    def repo(post):
+        repos = r.findall(post.summary_detail.base)
+        if repos:
+            return repos[0]
+        else:
+            return ''
+
+    table = [[  c.green | '[{}] '.format(num),
+                repo(post),
+                parse_time(post),
+                c.dark_gray | post.author_detail.name, post.title]
+            for num, post in reversed(list(zipped.items()))]
+
+    print(tabulate(table, tablefmt="plain"))#, tablefmt="plain"))
 
 
 def print_desc(topic, txt):
-    try:
-        print(bcolors.WARNING + '\n\n{}:'.format(topic) + bcolors.ENDC)
-    except UnicodeEncodeError:
-        pass
-    print(bcolors.BOLD + '\n\t{}'.format(txt.encode('utf8')) + bcolors.ENDC)
+    with c.info:
+        try:
+                print('\n\n{}:'.format(topic))
+        except UnicodeEncodeError:
+            pass
+    with c.bold:
+        print('\n\t{}'.format(txt))
 
 
 def open_it():
@@ -116,8 +127,9 @@ def clean_txt(txt):
 def _continue():
     try:
 
-        msg = """\n\nPress: Enter to continue, ... [NUM] for short description / open a page, ... or CTRL-C to exit: """
-        print(bcolors.FAIL + msg + bcolors.ENDC, end='')
+        msg = """\nPress: Enter to continue, ... [NUM] for short description / open a page, ... or CTRL-C to exit: """
+        with c.warn:
+            print(msg, end='')
         # kb is the pressed keyboard key
         try:
             kb = raw_input()
@@ -144,49 +156,62 @@ def parse_feed(url):
 
 def fetch_feeds(urls):
 
+    feeds = []
     for i, url in enumerate(urls):
 
-        d = parse_feed(url)
+        feeds += [parse_feed(url)]
 
-        if d is None:
-            continue  # to next url
+    #if d is None:
+    #    continue  # to next url
 
-        # feeds source
-        l = len(urls) - 1
-        print(
-            bcolors.HEADER + "\n     {}/{} SOURCE>> {}\n".format(i, l, url) + bcolors.ENDC)
+    # feeds source
+    l = len(urls) - 1
 
-        # print out feeds
-        zipped = dict(enumerate(d.entries))
+    for i, d in enumerate(feeds):
+        title = url if d.feed.title else d.feed.title
+        print(c.magenta | "     {}/{} SOURCE>> {}".format(i, l, d.feed.title) )
 
-        def recurse(zipped):
+    # print out feeds
 
-            print_feed(zipped)
+    zipped = []
+    for d in feeds:
+        zipped += d.entries
 
-            kb = _continue()  # keystroke listener
+    # https://wiki.python.org/moin/HowTo/Sorting#The_Old_Way_Using_Decorate-Sort-Undecorate
+    decorated = [(dateutil.parser.parse(post.published), i, post) for i, post in enumerate(zipped)]
+    decorated.sort(reverse=True)
+    zipped = [post for time, i, post in decorated]               # undecorate
 
-            if kb:
-                user_selected = kb is not '' and kb in str(zipped.keys())
-                if user_selected:
-                    # to open page in browser
-                    link = zipped[int(kb)].link
-                    title = zipped[int(kb)].title
-                    try:
-                        desc = zipped[int(kb)].description
-                        desc = clean_txt(desc)
-                        print_desc(title, desc)
-                    except AttributeError:
-                        print('\n\tNo description available!!')
+    zipped = dict(enumerate(zipped))
 
-                    if open_it():
-                        open_page(link, title)
-                else:
-                    print(
-                        bcolors.BOLD + 'Invalid entry ... {} '.format(kb) + bcolors.ENDC)
-                # repeat with same feeds and listen to kb again
-                recurse(zipped)
+    def recurse(zipped):
 
-        recurse(zipped)
+        print_feed(zipped)
+
+        kb = _continue()  # keystroke listener
+
+        if kb:
+            user_selected = kb is not '' and kb in str(zipped.keys())
+            if user_selected:
+                # to open page in browser
+                link = zipped[int(kb)].link
+                title = zipped[int(kb)].title
+                try:
+                    desc = zipped[int(kb)].description
+                    desc = clean_txt(desc)
+                    print_desc(title, desc)
+                except AttributeError:
+                    print('\n\tNo description available!!')
+
+                if open_it():
+                    open_page(link, title)
+            else:
+                with c.bold:
+                    print('Invalid entry ... {} '.format(kb))
+            # repeat with same feeds and listen to kb again
+            recurse(zipped)
+
+    recurse(zipped)
 
 
 def topic_choice(browse):
