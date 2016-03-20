@@ -40,7 +40,7 @@ try:
 except ImportError:
     from urllib.request import urlopen
 
-import termfeed.dbop
+import termfeed.database
 
 dbop = termfeed.database.DataBase()
 
