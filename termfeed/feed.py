@@ -40,7 +40,9 @@ try:
 except ImportError:
     from urllib.request import urlopen
 
-import termfeed.dbop as dbop
+import termfeed.dbop
+
+dbop = termfeed.database.DataBase()
 
 
 class bcolors:
@@ -190,18 +192,17 @@ def fetch_feeds(urls):
 def topic_choice(browse):
 
     if browse:
-        topics = dbop.topics()
 
         tags = {}
 
-        for i, tag in enumerate(topics):
+        for i, tag in enumerate(dbop.topics):
             tags[i] = tag
             print("{}) {}".format(i, tags[i]))
 
         try:
             m = '\nChoose the topic (number)? : '
             try: # python 2
-                uin = raw_input(m) 
+                uin = raw_input(m)
             except NameError: # python 3
                 uin = input(m)
             uin = int(uin)
@@ -223,8 +224,8 @@ def validate_feed(url):
     else:
         exit()
 
-from .support.docopt import docopt
-
+# from .support.docopt import docopt
+from docopt import docopt
 
 def main():
     args = docopt(
@@ -269,7 +270,7 @@ def main():
         if category:
             dbop.browse_links(category)
         else:
-            dbop.print_topics()
+            print(dbop)
 
     if rebuild:
         dbop.rebuild_library()
