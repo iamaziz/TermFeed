@@ -16,7 +16,7 @@ setup(
     author_email='iamaziz.alto@gmail.com',
     version='0.0.11',
     install_requires=['feedparser', 'pyyaml', 'docopt'],
-    packages=['termfeed', 'termfeed.support'],
+    packages=['termfeed'],
     scripts=[],
     entry_points={
         'console_scripts': [
