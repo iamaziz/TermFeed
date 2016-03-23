@@ -6,13 +6,13 @@
 Usage:
     feed
     feed <rss-url>
-    feed -b [<category>]
-    feed -a <rss-url> [<category>]
-    feed -d <rss-url>
-    feed -t [<category>]
-    feed -D <category>
-    feed -R [<file>]
-    feed --print-library
+    feed -b [<category> | --debug]
+    feed -a <rss-url> [<category> | --debug]
+    feed -d <rss-url> [--debug]
+    feed -t [<category> | --debug]
+    feed -D <category> [--debug]
+    feed -R [<file> | --debug]
+    feed --print-library [--debug]
     feed (-h | --help)
     feed --version
 
@@ -26,6 +26,7 @@ Options:
     -D TOPIC      Remove entire cateogry (and its urls) from your library.
     -R            Rebuild the library from the rss.yaml
     -h --help     Show this screen.
+    --debug       Enable debug messages
 
 """
 
@@ -38,6 +39,13 @@ import re
 import arrow
 import dateutil.parser
 from plumbum import colors as c
+import click
+import logging
+logger = logging.getLogger(__name__)
+
+log_info = logger.info
+
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 try:
     from urllib import urlopen
@@ -284,7 +292,9 @@ def main():
     rebuild = args['-R']
     file = args['<file>']
     print_library = args['--print-library']
+    debug_flag = args['--debug']
 
+    dbop.debug_flag = debug_flag
 
     fetch = True
 
@@ -326,11 +336,47 @@ def main():
     if print_library:
         print(dbop.as_yaml)
 
+    dbop.save_on_fs_if_changed()
+
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
+@click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
+@click.pass_context
+@click.option('--debug/--no-debug', default=False)
+def cli(ctx, debug):
+    if ctx.invoked_subcommand is None:
+        print('I was invoked without subcommand')
+    else:
+        print('I am about to invoke %s' % ctx.invoked_subcommand)
+    print('Debug mode is %s' % ('on' if debug else 'off'))
+
+@cli.command()
+@click.argument('url', nargs=1)
+@click.argument('label', nargs=-1) # , help='One or more labels for this url.'
+@click.option('--title', default='')
+#@click.option('-l', '--label', default='General', multiple=True)
+def add(url, label, **kwargs):
+    print('Synching', kwargs)
+    pass
+
+@cli.command()
+@click.argument('name') # , help='namme must be a url or a label'
+def remove(**kwargs):
+    pass
+
+@cli.command()
+def show(**kwargs):
+    print(dbop.as_yaml)
+    print(dbop.as_yaml_v2)
+
 # start
 if __name__ == '__main__':
 
     if not _connected():
         print('No Internet Connection!')
         exit()
+
+    # cli()
 
     main()

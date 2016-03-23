@@ -7,42 +7,84 @@ database operations.
 dbop.py manipulate database add, update, delete
 """
 
-import yaml, json
+import yaml, json, re
+from plumbum import local
 from os import path
 from cached_property import cached_property
+from pathlib import Path
+
+
 
 class DataBase:
 
-    file = path.join(path.expanduser('~'), '.termfeed.json')
+    file = local.env.home / '.termfeed.json'
 
-    def rebuild_library(self, file):
-        if not path:
-            file = path.join(path.dirname(__file__), 'rss.yaml')
-        elif not path.exists(file):
+    debug_flag = False
+
+    def debug(self, *args, **kwargs):
+        if self.debug_flag:
+            print(*args, **kwargs)
+
+    def rebuild_library(self, file = None):
+        # force type local.path
+        file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+        if not file.exists():
             raise FileNotFoundError(file)
-
         with open(file, 'r') as f:
-            rss = yaml.load(f)
+            self.rss = yaml.load(f)
 
-        self.save_rss_on_fs(rss)
-        print('created ".termfeed" in {}'.format(path.dirname(self.file)))
+        print('created ".termfeed" in {}'.format(file.dirname))
 
     @property
     def as_yaml(self):
         return yaml.dump(self.rss, default_flow_style=False)
 
-    def __init__(self):
+    @property
+    def as_yaml_v2(self):
+        import collections
+        data = collections.defaultdict(dict)
+        for topic in self.rss:
+            for link in self.rss[topic]:
+                data[link].setdefault('label', []).append(topic)
 
-        # instantiate db if it's not created yet
-        if not (path.exists(self.file)):
-            self.rebuild_library()
+        r = re.compile(r'(\w+)(?:/commits/\w+\.atom|\.git)')
 
-        with open(self.file, 'r') as f:
-            self.rss = json.load(f)
+        for link in data:
+            if 'git' in link:
+                data[link].setdefault('flag', []).append('git')
 
-    def save_rss_on_fs(self, rss):
-        with open(self.file, 'w') as f:
-            json.dump(rss, f)
+                # ToDo: catch exeption
+                title, = r.findall(link)#summary_detail.base)
+                data[link]['title'] = title
+
+        return yaml.dump(dict(data))
+
+    #def __init__(self):
+    #    print(self.rss == self.rss)
+
+    def save_on_fs_if_changed(self):
+        if not self.__rss == self.rss:
+            print('Backup changed library in {}.'.format(self.file))
+            with open(self.file, 'w') as f:
+                json.dump(self.__rss, f)
+
+    __rss = None
+
+    @cached_property
+    def rss(self):
+        # The following will only called once
+        self.debug('Load library')
+        if not self.__rss:
+            if not self.file.exists():
+                file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+                if not file.exists():
+                    raise FileNotFoundError(file)
+                with open(file, 'r') as f:
+                    return yaml.load(f)
+            else:
+                with open(self.file, 'r') as f:
+                    self.__rss = json.load(f)
+        return self.__rss.copy() # ensure copy, for comp in __del__
 
     @property
     def topics(self):
@@ -76,25 +118,22 @@ class DataBase:
         if topic in self.topics:
             if link not in self.rss[topic]:
                 # to add a new url: copy, mutates, store back
-                temp = self.rss[topic]
-                temp.append(link)
-                self.rss[topic] = temp
-                self.save_rss_on_fs(self.rss)
+                #temp = self.rss[topic]
+                #temp.append(link)
+                #self.rss[topic] = temp
+                self.rss.append(link)
                 print('Updated .. {}'.format(topic))
             else:
                 print('{} already exists in {}!!'.format(link, topic))
         else:
             print('Created new category .. {}'.format(topic))
             self.rss[topic] = [link]
-            self.save_rss_on_fs(self.rss)
-
 
     def remove_link(self, link):
         done = False
         for topic in self.topics:
             if link in self.rss[topic]:
                 self.rss[topic] = [l for l in self.rss[topic] if l != link]
-                self.save_rss_on_fs(self.rss)
                 print('removed: {}\nfrom: {}'.format(link, topic))
                 done = True
 
@@ -108,7 +147,6 @@ class DataBase:
             exit()
         try:
             del self.rss[topic]
-            self.save_rss_on_fs(self.rss)
             print('Removed "{}" from your library.'.format(topic))
         except KeyError:
             print('"{}" is not in your library!'.format(topic))
