@@ -10,7 +10,7 @@ from termfeed.urls import rss
 homedir = path.expanduser('~')
 
 # initiate database datafile
-d = shelve.open(path.join(homedir, '.termfeed'))
+d = shelve.open(path.join(homedir, '.termfeed.db'))
 
 
 # dump urls.py into rss_shelf.db
