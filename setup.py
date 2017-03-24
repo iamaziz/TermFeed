@@ -8,15 +8,22 @@ except ImportError:
 
 setup(
     name='TermFeed',
-    description=('Browse, read, and open your favorite rss feed in the terminal (without curses).'),
+    description=(
+        'Browse, read, and open your favorite rss feed in the terminal (without curses).'),
     author='Aziz Alto',
     url='https://github.com/iamaziz/TermFeed',
     download_url='https://github.com/iamaziz/TermFeed/archive/master.zip',
-    license = "MIT",
+    license="MIT",
     author_email='iamaziz.alto@gmail.com',
     version='0.0.11',
     install_requires=[
-        'feedparser', 'pyyaml', 'docopt', 'plumbum', 'arrow', 'cached-property==1.3.0'],
+        'feedparser',
+        'pyyaml',
+        'docopt',
+        'plumbum',
+        'arrow',
+        'cached-property>=1.3.0',
+    ],
     packages=['termfeed'],
     scripts=[],
     entry_points={
