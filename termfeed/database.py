@@ -89,7 +89,11 @@ class DataBase:
             else:
                 with open(self.file, 'r') as f:
                     self.__rss = json.load(f)
-        return self.__rss.copy() # ensure copy, for comp in __del__
+        try:
+            return self.__rss.copy()  # ensure copy, for comp in __del__
+        except AttributeError:
+            print('No rss found. Please add rss url.')
+            sys.exit(1)
 
     @staticmethod
     def create_file(file):
