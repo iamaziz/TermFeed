@@ -15,7 +15,7 @@ setup(
     download_url='https://github.com/iamaziz/TermFeed/archive/master.zip',
     license="MIT",
     author_email='iamaziz.alto@gmail.com',
-    version='0.0.11',
+    version='0.0.12',
     install_requires=[
         'feedparser',
         'pyyaml',
