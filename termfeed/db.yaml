@@ -1,0 +1,13 @@
+https://github.com/boeddeker/TermFeed/commits/master.atom:
+  flag: [git, github]
+  label: [github]
+  title: TermFeed
+https://github.com/boeddeker/TermFeed/commits/master.atom:
+  flag: [git, github]
+  label: [github]
+  title: TermFeed
+http://blog.jupyter.org/rss/:
+  flag: []
+  label: [github]
+  title: blog.jupyter
+

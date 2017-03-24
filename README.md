@@ -11,7 +11,31 @@ To read, preview, open, store, or delete your favorite RSS feeds from the comman
 
 If 1) you are a terminal addict, and 2) you want to stay up to date with the outside world by reading quick feed and summaries WITHOUT having to leave your terminal; then TermFeed is for you. These are the main reasons I created TermFeed.
 
+# Changes agains original
 
+```Usage: feed [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  -l, --label TEXT
+  -n, --dry-run
+  -v, --verbose     Levels: -v:INFO, -vvv:DEBUG
+  -h, --help        Show this message and exit.
+
+Commands:
+  add
+  browse
+  edit
+  load
+  remove
+  show
+  ```
+
+Config file is a termdeef/db.yaml
+Modifications are made to support git repos.
+
+
+
+# Old Readme
 
 ### Usage
 
@@ -24,9 +48,9 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 - browse latest feed from the single link `<RSS-LINK>` provided.
 - e.g. `$ feed https://news.ycombinator.com/rss`
 
-`$ feed -b`
+`$ feed -b [<category>]`
 
-- browse latest feeds by category of your library.
+- browse latest feeds by <category> of your library. If <category> is missing select input appear.
 
 `$ feed -t`
 
@@ -51,9 +75,9 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 `$ feed -D <category>`
 - Remove entire category (with its URLs) from library.
 
-`$ feed -R`
+`$ feed -R [<file>]`
 
-- rebuild the library from `urls.py`
+- rebuild the library. Default `rss.yaml`
 
 
 ### Features (what you can do?)
