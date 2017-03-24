@@ -74,7 +74,11 @@ def print_feed(zipped):
     # r = re.compile(r'(\w+)(?:/commits/\w+\.atom|\.git)')
 
     def repo(post):
-        return dbop.data[post.title_detail.base]['title']
+        try:
+            return dbop.data[post.title_detail.base]['title']
+        except:
+            print('Keys: ', dbop.data.keys())
+            raise
 
     # try:
     table = [[c.green | '[{}]'.format(num),

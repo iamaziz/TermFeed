@@ -11,7 +11,31 @@ To read, preview, open, store, or delete your favorite RSS feeds from the comman
 
 If 1) you are a terminal addict, and 2) you want to stay up to date with the outside world by reading quick feed and summaries WITHOUT having to leave your terminal; then TermFeed is for you. These are the main reasons I created TermFeed.
 
+# Changes agains original
 
+```Usage: feed [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  -l, --label TEXT
+  -n, --dry-run
+  -v, --verbose     Levels: -v:INFO, -vvv:DEBUG
+  -h, --help        Show this message and exit.
+
+Commands:
+  add
+  browse
+  edit
+  load
+  remove
+  show
+  ```
+
+Config file is a termdeef/db.yaml
+Modifications are made to support git repos.
+
+
+
+# Old Readme
 
 ### Usage
 
