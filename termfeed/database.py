@@ -76,7 +76,12 @@ class DataBase:
         self.debug('Load library')
         if not self.__rss:
             if not self.file.exists():
-                file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+                try:
+                    file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+                except UnboundLocalError:
+                    file = local.path(self.file) \
+                        if self.file else local.path(__file__).dirname / 'rss.yaml'
+
                 if not file.exists():
                     raise FileNotFoundError(file)
                 with open(file, 'r') as f:
