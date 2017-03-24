@@ -15,7 +15,8 @@ setup(
     license = "MIT",
     author_email='iamaziz.alto@gmail.com',
     version='0.0.11',
-    install_requires=['feedparser', 'pyyaml', 'docopt', 'plumbum', 'arrow'],
+    install_requires=[
+        'feedparser', 'pyyaml', 'docopt', 'plumbum', 'arrow', 'cached-property==1.3.0'],
     packages=['termfeed'],
     scripts=[],
     entry_points={

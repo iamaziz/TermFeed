@@ -76,15 +76,36 @@ class DataBase:
         self.debug('Load library')
         if not self.__rss:
             if not self.file.exists():
-                file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+                try:
+                    file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
+                except UnboundLocalError:
+                    file = local.path(self.file) \
+                        if self.file else local.path(__file__).dirname / 'rss.yaml'
+
                 if not file.exists():
-                    raise FileNotFoundError(file)
+                    self.create_file(file)
                 with open(file, 'r') as f:
                     return yaml.load(f)
             else:
                 with open(self.file, 'r') as f:
                     self.__rss = json.load(f)
-        return self.__rss.copy() # ensure copy, for comp in __del__
+        try:
+            return self.__rss.copy()  # ensure copy, for comp in __del__
+        except AttributeError:
+            print('No rss found. Please add rss url.')
+            sys.exit(1)
+
+    @staticmethod
+    def create_file(file):
+        """create file."""
+        input_res = input("Do you want to create setting file ([y]/n):")
+        if input_res == 'y' or input_res == '':
+            pass
+        else:
+            sys.exit(1)
+        with open(file, 'w') as f:
+            yaml.dump({'General': []}, f)
+        print('Setting created at: {}'.format(file))
 
     @property
     def topics(self):
