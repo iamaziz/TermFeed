@@ -4,175 +4,186 @@
 """
 database operations.
 
-dbop.py manipulate database add, update, delete
+database.py manipulate database add, update, delete
 """
 
 import yaml, json, re
 from plumbum import local
+from plumbum import colors as c
 from os import path
 from cached_property import cached_property
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
 
+log_info = logger.info
+log_debug = logger.debug
 
 
 class DataBase:
 
     file = local.env.home / '.termfeed.json'
-
-    debug_flag = False
-
-    def debug(self, *args, **kwargs):
-        if self.debug_flag:
-            print(*args, **kwargs)
-
-    def rebuild_library(self, file = None):
-        # force type local.path
-        file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
-        if not file.exists():
-            raise FileNotFoundError(file)
-        with open(file, 'r') as f:
-            self.rss = yaml.load(f)
-
-        print('created ".termfeed" in {}'.format(file.dirname))
-
-    @property
-    def as_yaml(self):
-        return yaml.dump(self.rss, default_flow_style=False)
-
-    @property
-    def as_yaml_v2(self):
-        import collections
-        data = collections.defaultdict(dict)
-        for topic in self.rss:
-            for link in self.rss[topic]:
-                data[link].setdefault('label', []).append(topic)
-
-        r = re.compile(r'(\w+)(?:/commits/\w+\.atom|\.git)')
-
-        for link in data:
-            if 'git' in link:
-                data[link].setdefault('flag', []).append('git')
-
-                # ToDo: catch exeption
-                title, = r.findall(link)#summary_detail.base)
-                data[link]['title'] = title
-
-        return yaml.dump(dict(data))
-
-    #def __init__(self):
-    #    print(self.rss == self.rss)
-
-    def save_on_fs_if_changed(self):
-        if not self.__rss == self.rss:
-            print('Backup changed library in {}.'.format(self.file))
-            with open(self.file, 'w') as f:
-                json.dump(self.__rss, f)
-
-    __rss = None
+    __data = None
+    dry_run = False
 
     @cached_property
-    def rss(self):
+    def data(self):
         # The following will only called once
-        self.debug('Load library')
-        if not self.__rss:
+        log_info('Load library')
+        if not self.__data:
             if not self.file.exists():
-                try:
-                    file = local.path(file) if file else local.path(__file__).dirname / 'rss.yaml'
-                except UnboundLocalError:
-                    file = local.path(self.file) \
-                        if self.file else local.path(__file__).dirname / 'rss.yaml'
-
+                file = local.path(__file__).dirname / 'db.yaml'
                 if not file.exists():
-                    self.create_file(file)
+                    raise FileNotFoundError(file)
                 with open(file, 'r') as f:
+                    log_info('Open yaml')
                     return yaml.load(f)
             else:
                 with open(self.file, 'r') as f:
-                    self.__rss = json.load(f)
-        try:
-            return self.__rss.copy()  # ensure copy, for comp in __del__
-        except AttributeError:
-            print('No rss found. Please add rss url.')
-            sys.exit(1)
+                    log_info('Open json')
+                    self.__data = json.load(f)
+        return self.__data.copy()  # ensure copy, for comp in __del__
 
-    @staticmethod
-    def create_file(file):
-        """create file."""
-        input_res = input("Do you want to create setting file ([y]/n):")
-        if input_res == 'y' or input_res == '':
-            pass
+    # def set_data(self, data):
+    #     verify_data(data)
+    #     self.__data = data
+    #     del self.data
+    #     with self:
+    #         pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # type, value, traceback
+        verify_data(self.data)
+        if not self.dry_run:
+            print('Backup changed library in {}.'.format(self.file))
+            with open(self.file, 'w') as f:
+                json.dump(self.data, f)
+                log_info('Write to json')
+                log_debug(json.dumps(self.data))
+                log_debug(self.as_yaml)
         else:
-            sys.exit(1)
-        with open(file, 'w') as f:
-            yaml.dump({'General': []}, f)
-        print('Setting created at: {}'.format(file))
+            print('Normaly would write the following to file {}: '.format(self.file))
+            print(c.highlight | c.black | json.dumps(self.data))
+
+    debug_flag = False
 
     @property
-    def topics(self):
-        return self.rss.keys()
-        # return list(self.db.keys())
+    def labels(self):
+        labels = set()
+        for _, val in self.data.items():
+            labels |= set(val['label'])
+        return labels
 
-    def read(self, topic):
-        if topic in self.topics:
-            return self.rss[topic]
-        else:
-            return None
+    @property
+    def as_yaml(self):
+        return yaml.dump(self.data)  # , default_flow_style=False
 
-    def browse_links(self, topic):
-        if topic in self.topics:
-            links = self.rss[topic]
-            print('{} resources:'.format(topic))
+    def link_for_label(self, *labels):
+        return [link for link, val in self.data.items() if any(True for l in labels if l in val['label'])]
+
+    @property
+    def links(self):
+        return self.data.keys()
+
+    def browse_links(self, label):
+        if label in self.labels:
+            links = self(label)
+            print('{} resources:'.format(label))
             for link in links:
                 print('\t{}'.format(link))
         else:
-            print('no category named {}'.format(topic))
+            print('no category named {}'.format(label))
             print(self)
 
     def __str__(self):
-        out = 'available topics: \n\t' + '\n\t'.join(self.topics)
+        out = 'available lables: \n\t' + '\n\t'.join(self.labels)
         return(out)
 
-    def print_topics(self):
+    def print_labels(self):
         print(self)
 
-    def add_link(self, link, topic='General'):
-        if topic in self.topics:
-            if link not in self.rss[topic]:
-                # to add a new url: copy, mutates, store back
-                #temp = self.rss[topic]
-                #temp.append(link)
-                #self.rss[topic] = temp
-                self.rss.append(link)
-                print('Updated .. {}'.format(topic))
-            else:
-                print('{} already exists in {}!!'.format(link, topic))
+    def link_as_yaml(self, link):
+        return yaml.dump({link:self.data[link]})
+
+    def add_link(self, link, *labels, flag = None, title=''):
+        if link not in self.data:
+            if not flag:
+                flag = []
+            template = dict(title=title, flag=flag, label=list(labels))
+            self.data[link] = verify_entry(template, link)
+            print('Added:')
+            print(self.link_as_yaml(link))
+            if logger.level <= logging.INFO:
+                print(self.as_yaml)
+        elif not title == '' or not title == self.data[link]['title']:
+            self.data[link]['label'] = list(set(self.data[link]['label']) | set(labels))
+            self.data[link]['title'] = title
+            log_info('Title has changed')
+            print(self.as_yaml)
+
+        elif set(labels) | set(self.data[link]['label']) == set(self.data[link]['label']):
+            print('{} already exists and has all labels: {}!!'.format(link, labels))
+            print(self.as_yaml)
         else:
-            print('Created new category .. {}'.format(topic))
-            self.rss[topic] = [link]
+            self.data[link]['label'] = list(set(self.data[link]['label']) | set(labels))
+            # print('Created new category .. {}'.format(topic))
+            print(self.link_as_yaml(link))
+            if logger.level <= logging.INFO:
+                print(self.as_yaml)
 
     def remove_link(self, link):
         done = False
-        for topic in self.topics:
-            if link in self.rss[topic]:
-                self.rss[topic] = [l for l in self.rss[topic] if l != link]
-                print('removed: {}\nfrom: {}'.format(link, topic))
-                done = True
-
-        if not done:
+        if link in self.data:
+            del self.data[link]
+            print('removed: {}'.format(link))
+        else:
             print('URL not found: {}'.format(link))
 
-
-    def delete_topic(self, topic):
-        if topic == 'General':
+    def delete_topic(self, label):
+        if label == '':
             print('Default topic "General" cannot be removed.')
             exit()
         try:
-            del self.rss[topic]
-            print('Removed "{}" from your library.'.format(topic))
+            for link in self.data:
+                if label in self.data[link]['label']:
+                    self.data[link]['label'] = list(set(self.data[link]['label']) - set(label))
+            print('Removed "{}" from your library.'.format(label))
         except KeyError:
-            print('"{}" is not in your library!'.format(topic))
+            print('"{}" is not in your library!'.format(label))
             exit()
 
+
+def verify_entry(entry, link):
+    allowed_keys = {'label', 'flag', 'title'}
+    if not entry:
+        entry = dict()
+    if not (entry.keys() | allowed_keys) == allowed_keys:
+        print('The url {} has invalid keys: '.format(link), entry)
+        exit()
+    if not isinstance(entry.setdefault('title', ''), str):
+        print('The url {} has invalid title member: {}'.format(link, entry['title']))
+        exit()
+    if not isinstance(entry.setdefault('flag', []), list):
+        print('The url {} has invalid flag type: {}'.format(link, entry['flag']))
+        exit()
+    if not all([isinstance(f, str) for f in entry['flag']]):
+        print('The url {} has invalid flag member: {}'.format(link, entry['flag']))
+        exit()
+    if not isinstance(entry.setdefault('label', []), list):
+        print('The url {} has invalid flag type: {}'.format(link, entry['label']))
+        exit()
+    if not all([isinstance(l, str) for l in entry['label']]):
+        print('The url {} has invalid flag member: {}'.format(link, entry['label']))
+        exit()
+    return entry
+
+
+def verify_data(data):
+    for link in data:
+        data[link] = verify_entry(data[link], link)
 
 # if __name__ == '__main__':
 
