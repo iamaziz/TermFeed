@@ -14,10 +14,10 @@ homedir = path.expanduser('~')
 
 def rebuild_library():
     import termfeed.dbinit
-    print('created ".termfeed.db" in {}'.format(homedir))
+    print('created ".termfeed" in {}'.format(homedir))
 
 # instantiate db if it's not created yet
-if not path.exists(homedir + '/.termfeed.db'):
+if not path.exists(homedir + '/.termfeed'):
     rebuild_library()
 
 

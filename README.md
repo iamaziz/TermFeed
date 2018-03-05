@@ -136,8 +136,8 @@ download and unpack the [zipped folder](https://github.com/iamaziz/TermFeed/arch
 
 	$ pip uninstall TermFeed
 
-I use a data file (`.termfeed.db`) as a mini-database to maintain the RSS URLs.
-This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete it as well.
+I use a data file (`.termfeed`) as a mini-database to maintain the RSS URLs.
+This file is created at the home directory (e.g. `$HOME/.termfeed`), delete it as well.
 
 
 > Remember, you may need to run these commands as an admin e.g.
