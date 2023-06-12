@@ -1,19 +1,16 @@
-TermFeed
-====
+# TermFeed
 
 [![PyPI version](https://badge.fury.io/py/termfeed.svg)](http://badge.fury.io/py/termfeed)
 
 **Term**inal **Feed** is a *minimal* feed **reader** for the terminal (without curses).
 
-To read, preview, open, store, or delete your favorite RSS feeds from the command line.
+TermFeed is a minimal RSS reader for your terminal. You can read, preview, open, store, and delete your favorite RSS feeds directly from the command line.
 
-#### Why?
-
-If 1) you are a terminal addict, and 2) you want to stay up to date with the outside world by reading quick feed and summaries WITHOUT having to leave your terminal; then TermFeed is for you. These are the main reasons I created TermFeed.
-
+## Why TermFeed?
+TermFeed is perfect for terminal addicts who want to stay up-to-date with the world by quickly reading feed summaries WITHOUT leaving the terminal.
 
 
-### Usage
+## Usage
 
 `$ feed`
 
@@ -56,7 +53,7 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 - rebuild the library from `urls.py`
 
 
-### Features (what you can do?)
+## Features (what you can do?)
 
 - List feeds from different sources (stored in your library) with colorful text.
 - Preview a short summary of a selected feed.
@@ -64,7 +61,7 @@ If 1) you are a terminal addict, and 2) you want to stay up to date with the out
 - Store new (or delete) RSS URLs in (from) your library under a specific topic or under the default tag `General`.
 
 
-### Examples
+## Examples
 
 <!-- see: TermFeed gifs repo: http://imgur.com/a/EBHho
 -->
@@ -117,7 +114,7 @@ Options:
 ```
 
 
-### Installation
+## Installation
 
 1) from `PyPI` repository:
 
@@ -131,7 +128,7 @@ download and unpack the [zipped folder](https://github.com/iamaziz/TermFeed/arch
 	$ cd TermFeed
 	$ python setup.py install
 
-### Uninstall
+## Uninstall
 
 
 	$ pip uninstall TermFeed
@@ -144,12 +141,12 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 > 	`$ sudo ...`
 
 
-#### Dependencies
+### Dependencies
 
 - [feedparser](https://pypi.python.org/pypi/feedparser)
 
 
-#### Miscellaneous
+### Miscellaneous
 
 - Tested on OS X and Linux.
 - Supports Python 2.7 and Python 3.4
@@ -157,7 +154,10 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 - [Instant RSS Search](http://ctrlq.org/rss) is a nice search engine for searching RSS feeds.
 
 
-### Author
+## Creator
 
 - Aziz Alto
 
+## Contributors
+- Bradley
+- Victor van Liederen
