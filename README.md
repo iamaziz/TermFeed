@@ -61,7 +61,27 @@ TermFeed is perfect for terminal addicts who want to stay up-to-date with the wo
 - Store new (or delete) RSS URLs in (from) your library under a specific topic or under the default tag `General`.
 
 
-## Help
+## Examples
+
+<!-- see: TermFeed gifs repo: http://imgur.com/a/EBHho
+-->
+
+Default browsing
+
+![default](http://i.imgur.com/CXFFIaF.gif?1)
+
+Browse by topic
+
+![browse topics](http://i.imgur.com/J09EFVv.gif?1)
+
+Update library (Add or delete links)
+
+![add delete](http://i.imgur.com/wcHdK4l.gif?1)
+
+
+See the avaiable topics and RSS links in your library:
+
+![list topics](http://i.imgur.com/98DM6US.gif?1)
 
 Help
 See `$ feed -h` for detailed usage.
@@ -139,4 +159,5 @@ This file is created at the home directory (e.g. `$HOME/.termfeed.db`), delete i
 - Aziz Alto
 
 ## Contributors
+- Bradley
 - Victor van Liederen
