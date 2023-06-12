@@ -1,31 +1,20 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-"""TermFeed 0.0.11
+"""
+TermFeed 0.0.11: Command Line RSS Feed Manager
 
-Usage:
-    feed
-    feed <rss-url>
-    feed -b
-    feed -a <rss-url> [<category>]
-    feed -d <rss-url>
-    feed -t [<category>]
-    feed -D <category>
-    feed -R
-    feed (-h | --help)
-    feed --version
-
-Options:
-                  List feeds from the default category 'General' of your library.
-    <URL>         List feeds from the provided url source.
-    -b            Browse feed by category avaialble in the database file.
-    -a URL        Add new url <rss-url> to database under [<category>] (or 'General' otherwise).
-    -d URL        Delete <rss-url> from the database file.
-    -t            See the stored categories in your library, or list the URLs stored under <category> in your library.
-    -D TOPIC      Remove entire cateogry (and its urls) from your library.
-    -R            Rebuild the library from the url.py
-    -h --help     Show this screen.
-
+Commands:
+    feed                 - Lists feeds from 'General' category.
+    feed <rss-url>       - Lists feeds from provided RSS URL.
+    feed -b              - Browses feeds by category.
+    feed -a <url> [cat]  - Adds new RSS URL to [cat] (default: 'General').
+    feed -d <rss-url>    - Deletes specified RSS URL from database.
+    feed -t [cat]        - Shows categories or URLs under a category.
+    feed -D <cat>        - Deletes a category and its URLs.
+    feed -R              - Rebuilds library from url.py.
+    feed (-h | --help)   - Displays help screen.
+    feed --version       - Shows TermFeed version.
 """
 
 

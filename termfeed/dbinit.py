@@ -1,21 +1,25 @@
 #!/usr/bin/env python
 
-# This should be exectued once to initialize the db from urls.py
-
+import os
 import shelve
-from os import path
-
 from termfeed.urls import rss
 
-homedir = path.expanduser('~')
+def initialize_database(database_path, rss_data):
+    try:
+        with shelve.open(database_path) as db:
+            for topic, links in rss_data.items():
+                db[topic] = links
+    except Exception as e:
+        print(f"Error while initializing the database: {e}")
 
-# initiate database datafile
-d = shelve.open(path.join(homedir, '.termfeed'))
+def main():
+    
+    # Determine home directory and database file path
+    home_dir = os.path.expanduser('~')
+    database_file_path = os.path.join(home_dir, '.termfeed')
 
+    # Initialize database with rss data from 'urls.py'
+    initialize_database(database_file_path, rss)
 
-# dump urls.py into rss_shelf.db
-for topic in rss:
-	links = rss[topic]
-	d[topic] = [link for link in links]
-
-d.close()
+if __name__ == "__main__":
+    main()
